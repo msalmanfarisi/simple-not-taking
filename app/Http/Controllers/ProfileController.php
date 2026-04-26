@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Encoders\WebpEncoder;
 use Intervention\Image\ImageManager;
 
 class ProfileController extends Controller
@@ -39,8 +41,10 @@ class ProfileController extends Controller
             FileSecurity::assertSafeImage($file);
 
             $filename = 'avatars/'.Str::uuid()->toString().'.webp';
-            $img = ImageManager::gd()->read($file->getRealPath())->cover(256, 256);
-            Storage::disk('public')->put($filename, (string) $img->toWebp(85));
+            $img = ImageManager::usingDriver(GdDriver::class)
+                ->decodePath($file->getRealPath())
+                ->cover(256, 256);
+            Storage::disk('public')->put($filename, (string) $img->encode(new WebpEncoder(quality: 85)));
 
             if ($user->profile_photo_path && Storage::disk('public')->exists($user->profile_photo_path)) {
                 Storage::disk('public')->delete($user->profile_photo_path);

@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Encoders\WebpEncoder;
 use Intervention\Image\ImageManager;
 use Mews\Purifier\Facades\Purifier;
 
@@ -220,9 +222,11 @@ class NoteController extends Controller
     private function storeThumbnail(UploadedFile $file): string
     {
         FileSecurity::assertSafeImage($file);
-        $img = ImageManager::gd()->read($file->getRealPath())->scaleDown(1200, 1200);
+        $img = ImageManager::usingDriver(GdDriver::class)
+            ->decodePath($file->getRealPath())
+            ->scaleDown(1200, 1200);
         $filename = 'thumbnails/'.Str::uuid()->toString().'.webp';
-        Storage::disk('public')->put($filename, (string) $img->toWebp(82));
+        Storage::disk('public')->put($filename, (string) $img->encode(new WebpEncoder(quality: 82)));
 
         return $filename;
     }
