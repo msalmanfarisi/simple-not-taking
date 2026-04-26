@@ -33,10 +33,9 @@
             @foreach($note->attachments as $att)
                 <div class="attachment-row">
                     <a href="{{ route('notes.attachments.download', [$note, $att]) }}">{{ $att->original_name }}</a>
-                    <form method="POST" action="{{ route('notes.attachments.destroy', [$note, $att]) }}" class="inline" onsubmit="return confirm('Hapus lampiran?');">
-                        @csrf @method('DELETE')
-                        <button class="btn-danger" type="submit">Hapus</button>
-                    </form>
+                    <label class="muted" style="margin-left:8px;">
+                        <input type="checkbox" name="delete_attachments[]" value="{{ $att->id }}"> Hapus
+                    </label>
                 </div>
             @endforeach
         @endif

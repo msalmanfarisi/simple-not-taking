@@ -139,6 +139,19 @@ class NoteController extends Controller
             }
 
             $note->save();
+
+            $deleteIds = array_map('intval', (array) $request->input('delete_attachments', []));
+            if (! empty($deleteIds)) {
+                $toDelete = Attachment::query()
+                    ->where('note_id', $note->id)
+                    ->whereIn('id', $deleteIds)
+                    ->get();
+                foreach ($toDelete as $att) {
+                    Storage::disk('local')->delete($att->stored_path);
+                    $att->delete();
+                }
+            }
+
             $this->storeAttachments($request, $note);
         });
 
@@ -216,6 +229,8 @@ class NoteController extends Controller
             'attachments.*' => ['file', 'mimes:'.$allowed, 'max:'.(FileSecurity::MAX_ATTACHMENT_BYTES / 1024)],
             'share_password' => ['nullable', 'string', 'min:8', 'max:128'],
             'share_expires_at' => ['nullable', 'date', 'after:now'],
+            'delete_attachments' => ['nullable', 'array'],
+            'delete_attachments.*' => ['integer'],
         ]);
     }
 
