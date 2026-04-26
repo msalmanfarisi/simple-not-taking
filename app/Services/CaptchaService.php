@@ -4,7 +4,9 @@ namespace App\Services;
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use RuntimeException;
 
 /**
  * Generates an 8 character alphanumeric captcha containing both upper and
@@ -92,10 +94,22 @@ class CaptchaService
      */
     public function render(string $code): Response
     {
+        if (! extension_loaded('gd') || ! function_exists('imagecreatetruecolor')) {
+            Log::error('CaptchaService: GD extension not available — install php-gd to render the login captcha.');
+
+            return response('GD extension not available', 503, [
+                'Content-Type' => 'text/plain; charset=utf-8',
+                'Cache-Control' => 'no-store, no-cache, must-revalidate, private',
+            ]);
+        }
+
         $width = 220;
         $height = 70;
 
         $image = imagecreatetruecolor($width, $height);
+        if ($image === false) {
+            throw new RuntimeException('imagecreatetruecolor() failed — GD may be misconfigured.');
+        }
         imagesavealpha($image, true);
 
         $bg = imagecolorallocate($image, 250, 246, 240);
@@ -148,9 +162,18 @@ class CaptchaService
         }
 
         ob_start();
-        imagepng($image);
+        $written = imagepng($image);
         $payload = (string) ob_get_clean();
         imagedestroy($image);
+
+        if (! $written || $payload === '' || ! str_starts_with($payload, "\x89PNG\r\n\x1a\n")) {
+            Log::error('CaptchaService: imagepng() produced empty or invalid PNG payload.');
+
+            return response('Captcha rendering failed', 503, [
+                'Content-Type' => 'text/plain; charset=utf-8',
+                'Cache-Control' => 'no-store, no-cache, must-revalidate, private',
+            ]);
+        }
 
         return response($payload, 200, [
             'Content-Type' => 'image/png',

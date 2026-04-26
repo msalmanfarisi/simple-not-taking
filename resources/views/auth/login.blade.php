@@ -23,7 +23,9 @@
 
         <label for="captcha">Captcha (8 karakter, huruf besar &amp; kecil + angka)</label>
         <div class="captcha-row">
-            <img id="captchaImage" src="{{ route('captcha.image') }}?_={{ now()->timestamp }}"
+            <img id="captchaImage"
+                 src="{{ route('captcha.image', ['_' => now()->timestamp], false) }}"
+                 data-src="{{ route('captcha.image', [], false) }}"
                  alt="Captcha" width="220" height="70">
             <button type="button" id="captchaReload" class="btn-link" aria-label="Muat ulang captcha">&#x21bb;</button>
         </div>
