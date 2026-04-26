@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
-use Intervention\Image\Laravel\Facades\Image;
+use Intervention\Image\ImageManager;
 
 class ProfileController extends Controller
 {
@@ -39,7 +39,7 @@ class ProfileController extends Controller
             FileSecurity::assertSafeImage($file);
 
             $filename = 'avatars/'.Str::uuid()->toString().'.webp';
-            $img = Image::read($file->getRealPath())->cover(256, 256);
+            $img = ImageManager::gd()->read($file->getRealPath())->cover(256, 256);
             Storage::disk('public')->put($filename, (string) $img->toWebp(85));
 
             if ($user->profile_photo_path && Storage::disk('public')->exists($user->profile_photo_path)) {

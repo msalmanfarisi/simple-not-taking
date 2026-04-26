@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Intervention\Image\Laravel\Facades\Image;
+use Intervention\Image\ImageManager;
 use Mews\Purifier\Facades\Purifier;
 
 class NoteController extends Controller
@@ -220,7 +220,7 @@ class NoteController extends Controller
     private function storeThumbnail(UploadedFile $file): string
     {
         FileSecurity::assertSafeImage($file);
-        $img = Image::read($file->getRealPath())->scaleDown(1200, 1200);
+        $img = ImageManager::gd()->read($file->getRealPath())->scaleDown(1200, 1200);
         $filename = 'thumbnails/'.Str::uuid()->toString().'.webp';
         Storage::disk('public')->put($filename, (string) $img->toWebp(82));
 
