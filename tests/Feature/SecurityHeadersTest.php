@@ -20,6 +20,8 @@ class SecurityHeadersTest extends TestCase
         $this->assertNotEmpty($response->headers->get('Content-Security-Policy'));
         $this->assertNotEmpty($response->headers->get('Strict-Transport-Security'));
         $this->assertNotEmpty($response->headers->get('Permissions-Policy'));
+        $this->assertNull($response->headers->get('X-Powered-By'));
+        $this->assertNull($response->headers->get('Server'));
     }
 
     public function test_share_for_unknown_note_returns_404(): void

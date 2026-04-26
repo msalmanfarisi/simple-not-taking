@@ -58,6 +58,14 @@ class SecurityHeaders
         $response->headers->remove('X-Powered-By');
         $response->headers->remove('Server');
 
+        // PHP's expose_php SAPI directive injects X-Powered-By at send-time,
+        // bypassing Symfony's header bag. header_remove() suppresses it for
+        // this response.
+        if (function_exists('header_remove')) {
+            @header_remove('X-Powered-By');
+            @header_remove('Server');
+        }
+
         return $response;
     }
 }
