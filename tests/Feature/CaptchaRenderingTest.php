@@ -16,7 +16,7 @@ class CaptchaRenderingTest extends TestCase
             $this->markTestSkipped('GD extension not available in this environment.');
         }
 
-        $response = $this->get('/captcha.png');
+        $response = $this->get('/captcha');
 
         $response->assertOk();
         $response->assertHeader('Content-Type', 'image/png');
@@ -41,7 +41,7 @@ class CaptchaRenderingTest extends TestCase
 
         $this->assertStringContainsString('id="captchaImage"', $html);
         $this->assertMatchesRegularExpression(
-            '#<img[^>]+id="captchaImage"[^>]+src="/captcha\.png\?_=\d+"#',
+            '#<img[^>]+id="captchaImage"[^>]+src="/captcha\?_=\d+"#',
             $html,
             'Captcha <img> must use a root-relative src so it is unaffected by APP_URL/host mismatches.'
         );
@@ -53,7 +53,7 @@ class CaptchaRenderingTest extends TestCase
             $this->markTestSkipped('GD extension not available in this environment.');
         }
 
-        $this->get('/captcha.png')->assertOk();
+        $this->get('/captcha')->assertOk();
 
         $this->assertNotNull(session(CaptchaService::SESSION_KEY));
         $this->assertNotNull(session(CaptchaService::SESSION_ISSUED_AT_KEY));

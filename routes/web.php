@@ -24,7 +24,10 @@ Route::post('/{id}-{slug}.html/unlock', [ShareController::class, 'unlock'])
     ->name('share.unlock');
 
 // Captcha image — must be accessible without auth.
-Route::get('/captcha.png', CaptchaController::class)
+// Path intentionally has no .png suffix: many nginx/apache configs short-circuit
+// requests for static-asset extensions (png/jpg/css/...) with try_files $uri =404
+// before they reach PHP, which would 404 a dynamically-generated captcha.
+Route::get('/captcha', CaptchaController::class)
     ->middleware('throttle:60,1')
     ->name('captcha.image');
 
