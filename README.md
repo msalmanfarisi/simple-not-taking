@@ -8,6 +8,26 @@ A+ pada [securityheaders.com](https://securityheaders.com) /
 [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)
 dan [OWASP Secure Headers Project](https://owasp.org/www-project-secure-headers/).
 
+## Cuplikan Tampilan
+
+### Halaman Login
+
+Form login dengan captcha 8 karakter (kombinasi huruf besar/kecil + angka), digenerate server-side dan single-use.
+
+![Halaman Login](docs/screenshots/login.png)
+
+### Halaman Detail Catatan
+
+Detail catatan dengan auto-link URL di body (terbuka di tab baru via `target="_blank" rel="noopener noreferrer"`), kategori berwarna, link Referensi, dan share link publik yang clickable.
+
+![Halaman Detail Catatan](docs/screenshots/note.png)
+
+### Halaman Catatan yang Dibagikan (Public)
+
+Tampilan publik catatan via slug `/{id}-{slug}.html` — tanpa nav app, dengan body & referensi yang tetap auto-linked.
+
+![Halaman Shared Note](docs/screenshots/share.png)
+
 ## Fitur
 
 - **Catatan** — judul, tanggal otomatis, isi rich-text yang disanitasi,
