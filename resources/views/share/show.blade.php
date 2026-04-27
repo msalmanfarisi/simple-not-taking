@@ -25,7 +25,7 @@
                 @if($note->category) &middot; <span class="tag">{{ $note->category->name }}</span> @endif
             </p>
 
-            <div class="note-body">{!! $note->body !!}</div>
+            <div class="note-body">{!! $note->body_html !!}</div>
 
             @if($note->reference_url)
                 <p>Referensi:

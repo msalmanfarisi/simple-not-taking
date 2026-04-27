@@ -19,7 +19,7 @@
         <p><img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($note->thumbnail_path) }}" alt="" style="max-width:100%;height:auto;border-radius:10px;"></p>
     @endif
 
-    <div class="note-body">{!! $note->body !!}</div>
+    <div class="note-body">{!! $note->body_html !!}</div>
 
     @if($note->reference_url)
         <p>Referensi: <a href="{{ $note->reference_url }}" rel="noopener noreferrer nofollow ugc external" target="_blank">{{ $note->reference_url }}</a></p>
@@ -41,7 +41,11 @@
 <div class="card">
     <h3>Bagikan</h3>
     <p>
-        <code>{{ $note->share_link }}</code>
+        <a href="{{ $note->share_link }}"
+           target="_blank"
+           rel="noopener noreferrer">
+            <code>{{ $note->share_link }}</code>
+        </a>
         @if($note->requiresPassword()) <span class="tag">password</span> @endif
         @if($note->share_expires_at)
             <span class="tag">kedaluwarsa: {{ $note->share_expires_at->format('d M Y H:i') }}</span>

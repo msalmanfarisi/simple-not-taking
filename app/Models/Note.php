@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Mews\Purifier\Facades\Purifier;
 
 class Note extends Model
 {
@@ -50,6 +51,17 @@ class Note extends Model
     public function getShareLinkAttribute(): string
     {
         return url('/'.$this->id.'-'.$this->slug.'.html');
+    }
+
+    /**
+     * Render the note body for display: re-runs the body through HTMLPurifier
+     * (with AutoFormat.Linkify + HTML.TargetBlank enabled) so plain-text URLs
+     * become clickable hyperlinks that open in a new window, even for notes
+     * created before that config was enabled. Output is fully sanitized.
+     */
+    public function getBodyHtmlAttribute(): string
+    {
+        return Purifier::clean((string) ($this->attributes['body'] ?? ''));
     }
 
     public function isExpired(): bool

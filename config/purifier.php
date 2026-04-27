@@ -26,10 +26,21 @@ return [
     'settings' => [
         'default' => [
             'HTML.Doctype' => 'HTML 4.01 Transitional',
-            'HTML.Allowed' => 'div,b,strong,i,em,u,a[href|title],ul,ol,li,p[style],br,span[style],img[width|height|alt|src]',
+            'HTML.Allowed' => 'div,b,strong,i,em,u,a[href|title|target|rel],ul,ol,li,p[style],br,span[style],img[width|height|alt|src]',
+            'HTML.TargetBlank' => true,
+            'HTML.TargetNoopener' => true,
+            'HTML.TargetNoreferrer' => true,
+            'HTML.Nofollow' => true,
+            'Attr.AllowedRel' => 'noopener,noreferrer,nofollow,ugc,external',
             'CSS.AllowedProperties' => 'font,font-size,font-weight,font-style,font-family,text-decoration,padding-left,color,background-color,text-align',
             'AutoFormat.AutoParagraph' => true,
             'AutoFormat.RemoveEmpty' => true,
+            'AutoFormat.Linkify' => true,
+            'URI.AllowedSchemes' => [
+                'http' => true,
+                'https' => true,
+                'mailto' => true,
+            ],
         ],
         'test' => [
             'Attr.EnableID' => 'true',
